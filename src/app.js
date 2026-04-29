@@ -12,10 +12,29 @@ import { notFound } from './middlewares/notFound.middleware.js';
  * 3. Add GET /health route → { ok: true }
  * 4. Mount auth routes at /api/auth
  * 5. Mount user routes at /api/users
- * 6. Add notFound middleware
- * 7. Add errorHandler middleware (must be last!)
+ * 6. Add notFound middleware                       
+ * 7. Add errorHandler middleware (must be last!)   
  * 8. Return app
  */
 export function createApp() {
   // Your code here
+  const app = express();
+  app.use(express.json());
+
+  app.get('/health', (req, res) => {
+    try {
+      res.status(200).json({ ok: true })
+    } catch (error) {
+      console.log('Error', error)
+    }
+  })
+
+  app.use('/api/auth', authRoutes);
+  app.use('/api/users', userRoutes);
+
+  app.use('*', notFound)
+
+  app.use(errorHandler)
+
+  return app;
 }
